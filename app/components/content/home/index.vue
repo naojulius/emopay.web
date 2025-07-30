@@ -1,0 +1,65 @@
+<template>
+    <div class="select-none size-full flex flex-col items-center justify-center bg-gradient-to-br from-amber-100 to-pink-100 overflow-hidden">
+      <div
+        ref="emojiContainer"
+        class="relative size-full bg-white overflow-hidden"
+      >
+        <div
+          class="absolute text-5xl aspect-square flex items-center justify-center cursor-pointer"
+          v-for="(emoji, index) in emojis" :key="index" :ref="el => emojiRefs[index] = el">
+          {{ emoji }}
+          <code class="text-sm absolute -bottom-3 font-bold">
+            x4
+          </code>
+        </div>
+      </div>
+
+    </div>
+  </template>
+  
+  <script setup lang="ts">
+  import { onMounted, ref } from 'vue'
+  import gsap from 'gsap'
+  
+  const emojis = ['😀']
+  const emojiRefs = ref<HTMLElement[]>([])
+  const emojiContainer = ref<HTMLDivElement | null>(null)
+  
+  onMounted(() => {
+    emojiRefs.value.forEach((el) => {
+      animateEmoji(el)
+    })
+  })
+  
+  function animateEmoji(el: HTMLElement) {
+    const box = emojiContainer.value?.getBoundingClientRect()
+    if (!box) return
+  
+    const size = 50
+  
+    // Set random start position inside container for each emoji
+    const startX = Math.random() * (box.width - size)
+    const startY = Math.random() * (box.height - size)
+    gsap.set(el, { x: startX, y: startY })
+  
+    function move() {
+      const x = Math.random() * (box.width - size)
+      const y = Math.random() * (box.height - size)
+      const rotation = (Math.random() - 0.5) * 60 // -30 to +30 degrees
+      const scale = 0.8 + Math.random() * 0.4 // scale 0.8 to 1.2
+  
+      gsap.to(el, {
+        x,
+        y,
+        rotation,
+        scale,
+        duration: 3 + Math.random() * 3,
+        ease: 'sine.inOut',
+        onComplete: move,
+      })
+    }
+  
+    move()
+  }
+  </script>
+  

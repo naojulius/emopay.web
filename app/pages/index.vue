@@ -1,0 +1,4 @@
+<template>
+   <Content/>
+   <!-- <ContentHome /> -->
+</template>
