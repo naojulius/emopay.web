@@ -1,5 +1,5 @@
 <template>
-    <section class="w-full h-full flex flex-col">
+    <section class="w-full h-full flex flex-col select-none">
         <NavigationTop />
         <slot />
         <NavigationBottom />

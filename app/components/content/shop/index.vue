@@ -6,16 +6,15 @@
           class="aspect-square w-52 bg-gray-50 rounded-xl border border-amber-300 relative overflow-visible"
         >
           <div class="text-[8rem] flex items-center justify-center size-full relative z-10">
-            <span class="opacity-30 select-none">{{ emoji }}</span>
+            <span :class="['select-none', isEmojiTransparent ? 'opacity-30' : 'opacity-100']">{{ emoji }}</span>
           </div>
   
-          <!-- Sparkles container -->
-          <div ref="sparkles" class="absolute inset-0 pointer-events-none"></div>
+          <div ref="sparkles" class="absolute inset-0 pointer-events-none z-20"></div>
         </div>
       </div>
   
       <div class="py-2 flex flex-col gap-1 min-w-1/2">
-        <ButtonShop />
+        <ButtonShop  @click="onShop" :count="dailyRemainAd"/>
         <ButtonBuy />
       </div>
     </div>
@@ -24,13 +23,19 @@
   <script lang="ts" setup>
   import { ref } from "vue";
   import gsap from "gsap";
+
+  import { useAdStore } from '~/stores/ad.store';
+    const adStore = useAdStore();
+    const dailyRemainAd = computed(()=>adStore.dailyRemainAdCount)
   
-  const emoji = "👻";
+  const emoji = ref("👻");
   const emojiContainer = ref<HTMLElement | null>(null);
   const sparkles = ref<HTMLElement | null>(null);
+  const isEmojiTransparent = ref(true);
   
   // Set of sparkle emojis to randomly pick from
   const sparkleEmojis = ["✨", "💫", "🌟", "⭐", "⚡"];
+  const staticEmojis =  ["😀", "😂", "😍", "🤔", "😎", "😭", "😡", "😴", "🥶", "🤯"]
   
   function sparkle() {
     if (!emojiContainer.value || !sparkles.value) return;
@@ -65,13 +70,13 @@
         x: (Math.random() - 0.5) * 200,
         y: (Math.random() - 0.5) * 200,
         opacity: 1,
-        duration: 0.1 + Math.random() * 0.3,
+        duration: 0.05 + Math.random() * 0.3,
         ease: "power1.out",
         onComplete() {
           gsap.to(sparkleEl, {
             opacity: 0,
-            duration: 0.05,
-            delay: 0.1,
+            duration: 0.01,
+            delay: 0,
             onComplete() {
               sparkleEl.remove();
             },
@@ -80,5 +85,72 @@
       });
     }
   }
-  </script>
+
+  const n = ref(0);
+  let intervalId: ReturnType<typeof setInterval> | null = null;
+
+
+const onShop = () => {
+  if (dailyRemainAd.value <= 0) return;
+  if (intervalId !== null) return;
+  adStore.UpdateDailyRemainAd();
+  isEmojiTransparent.value = true;
+  intervalId = setInterval(() => {
+    const randomIndex = Math.floor(Math.random() * staticEmojis.length);
+    emoji.value = staticEmojis[randomIndex];
+    n.value++;
+
+    if (n.value >= 50) {
+      stopShop();
+      isEmojiTransparent.value = false;
+      emoji.value = getRandomEmoji();
+    }
+  }, 10);
+};
+
+const stopShop = () => {
+  if (intervalId !== null) {
+    clearInterval(intervalId);
+    intervalId = null;
+    n.value = 0;
+    sparkle();
+    
+  }
+};
+
+
+const commonEmojis = ["😀", "😃", "😄"];
+const rareEmojis = ["😎", "🥳"];
+const epicEmojis = ["🤩"];
+const legendaryEmojis = ["🧙‍♂️"];
+const mythicEmojis = ["🦄"];
+
+const emojiPools = [
+  { list: commonEmojis, weight: 60 },     // 60%
+  { list: rareEmojis, weight: 25 },       // 25%
+  { list: epicEmojis, weight: 10 },       // 10%
+  { list: legendaryEmojis, weight: 4 },   // 4%
+  { list: mythicEmojis, weight: 1 },      // 1%
+];
+
+const getRandomEmoji = () => {
+  const totalWeight = emojiPools.reduce((sum, pool) => sum + pool.weight, 0);
+  const rand = Math.random() * totalWeight;
+
+  let cumulative = 0;
+  for (const pool of emojiPools) {
+    cumulative += pool.weight;
+    if (rand < cumulative) {
+      const emojis = pool.list;
+      if (emojis.length === 0) break; // fallback to common if list is empty
+      const index = Math.floor(Math.random() * emojis.length);
+      return emojis[index];
+    }
+  }
+
+  // Fallback to a random common emoji
+  const fallbackIndex = Math.floor(Math.random() * commonEmojis.length);
+  return commonEmojis[fallbackIndex];
+}    
+</script>
   

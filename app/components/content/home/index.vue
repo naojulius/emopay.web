@@ -7,9 +7,9 @@
         <div
           class="absolute text-5xl aspect-square flex items-center justify-center cursor-pointer"
           v-for="(emoji, index) in emojis" :key="index" :ref="el => emojiRefs[index] = el">
-          {{ emoji }}
+          {{ emoji.emoji }}
           <code class="text-sm absolute -bottom-3 font-bold">
-            x4
+            x{{ emoji.count }}
           </code>
         </div>
       </div>
@@ -20,8 +20,13 @@
   <script setup lang="ts">
   import { onMounted, ref } from 'vue'
   import gsap from 'gsap'
+import { useEmojiStore } from '~/stores/emoji.store';
+import { useWalletStore } from '~/stores/wallet.store';
+
+const emojiStore = useEmojiStore();
+const walletStore = useWalletStore();
   
-  const emojis = ['😀']
+  const emojis = emojiStore.GetCountedAvailableEmojis();
   const emojiRefs = ref<HTMLElement[]>([])
   const emojiContainer = ref<HTMLDivElement | null>(null)
   
@@ -61,5 +66,17 @@
   
     move()
   }
+    let interval: any;
+
+    onMounted(() => {
+      interval = setInterval(() => {
+        const coinsPerSecond = emojiStore.GetCoinsPerSecond();
+        walletStore.AddCoin(coinsPerSecond);
+      }, 1000); // every 1 second
+    });
+
+    onUnmounted(() => {
+      clearInterval(interval);
+    });
   </script>
   

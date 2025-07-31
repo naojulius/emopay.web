@@ -1,4 +1,3 @@
 <template>
    <Content/>
-   <!-- <ContentHome /> -->
 </template>
