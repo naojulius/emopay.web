@@ -7,7 +7,6 @@ export const useModalStore = defineStore('modalStore', () => {
 
         switch (modal){
             case "select-emoji":
-                console.log("=================>")
                 isModalEmojiSelection.value = true
                 break;
         }

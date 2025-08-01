@@ -2,41 +2,46 @@ import { defineStore } from 'pinia';
 import type { CountedEmojiItem, EmojiItem } from '~/types/emoji.item.type';
 export const useEmojiStore = defineStore('emojiStore', () => {
     const Emojis  = ref<EmojiItem[]>([
-        {
-            name: "Smile",
-            emoji: "🙂",
-            rarity: "common",
-            durationHours: 24,
-            coinsPerHour: 0.001
-          },
-          {
-            name: "Cool",
-            emoji: "😎",
-            rarity: "rare",
-            durationHours: 24,
-            coinsPerHour: 0.002
-          },
-          {
-            name: "Robot",
-            emoji: "🤖",
-            rarity: "legendary",
-            durationHours: 48,
-            coinsPerHour: 0.01
-          },
-          {
-            name: "Smile",
-            emoji: "🙂",
-            rarity: "common",
-            durationHours: 24,
-            coinsPerHour: 0.001
-          },
-          {
-            name: "Smile",
-            emoji: "🙂",
-            rarity: "common",
-            durationHours: 24,
-            coinsPerHour: 0.001
-          },
+      {
+        ukey: 'hFyd586Dd',
+        name: "Smile",
+        emoji: "🙂",
+        rarity: "common",
+        durationHours: 24,
+        coinsPerHour: 0.001,
+      },
+      {
+        ukey: 'kLqv349Xs',
+        name: "Cool",
+        emoji: "😎",
+        rarity: "rare",
+        durationHours: 24,
+        coinsPerHour: 0.002,
+      },
+      {
+        ukey: 'rTzj872Pm',
+        name: "Robot",
+        emoji: "🤖",
+        rarity: "legendary",
+        durationHours: 48,
+        coinsPerHour: 0.01,
+      },
+      {
+        ukey: 'mNcY159Qw',
+        name: "Smile",
+        emoji: "🙂",
+        rarity: "common",
+        durationHours: 24,
+        coinsPerHour: 0.001,
+      },
+      {
+        ukey: 'xGjB603Wr',
+        name: "Smile",
+        emoji: "🙂",
+        rarity: "common",
+        durationHours: 24,
+        coinsPerHour: 0.001,
+      },
           
     ])
 
@@ -66,6 +71,10 @@ export const useEmojiStore = defineStore('emojiStore', () => {
     const GetAvailableEmojis = () =>{
         return Emojis
     } 
+
+    const AddEmojiFromAds = (emoji: any) => {
+      Emojis.value.push(emoji)
+    }
     
-    return { GetAvailableEmojis, GetCountedAvailableEmojis, GetCoinsPerSecond }
+    return { GetAvailableEmojis, GetCountedAvailableEmojis, GetCoinsPerSecond, AddEmojiFromAds }
   })

@@ -1,4 +1,5 @@
 export type EmojiItem = {
+    ukey: string,
     name: string
     emoji: string
     rarity: string

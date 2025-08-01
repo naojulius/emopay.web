@@ -1,6 +1,6 @@
 <template>
     <div class="p-4 flex flex-col gap-5">
-            <code class="text-3xl text-center">$EMO {{coin}} </code>
+            <code class="text-3xl text-center">$MOJI {{coin}} </code>
             <div class="w-full flex gap-6">
                 <div class="inline-flex gap-2 flex flex-col items-center justify-center">
                     <button class="btn btn-circle text-5xl overflow-hidden">

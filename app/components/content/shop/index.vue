@@ -23,8 +23,11 @@
   <script lang="ts" setup>
   import { ref } from "vue";
   import gsap from "gsap";
-
+  import { openMonetagAd } from '~/types/helpers/monetag.helper';
   import { useAdStore } from '~/stores/ad.store';
+import { useEmojiStore } from "~/stores/emoji.store";
+import type { EmojiItem } from "~/types/emoji.item.type";
+const emojiStore = useEmojiStore();
     const adStore = useAdStore();
     const dailyRemainAd = computed(()=>adStore.dailyRemainAdCount)
   
@@ -93,19 +96,37 @@
 const onShop = () => {
   if (dailyRemainAd.value <= 0) return;
   if (intervalId !== null) return;
-  adStore.UpdateDailyRemainAd();
-  isEmojiTransparent.value = true;
-  intervalId = setInterval(() => {
-    const randomIndex = Math.floor(Math.random() * staticEmojis.length);
-    emoji.value = staticEmojis[randomIndex];
-    n.value++;
 
-    if (n.value >= 50) {
-      stopShop();
-      isEmojiTransparent.value = false;
-      emoji.value = getRandomEmoji();
-    }
-  }, 10);
+  openMonetagAd()
+    .then(() => {
+      adStore.UpdateDailyRemainAd();
+      isEmojiTransparent.value = true;
+      intervalId = setInterval(() => {
+        const randomIndex = Math.floor(Math.random() * staticEmojis.length);
+        emoji.value = staticEmojis[randomIndex];
+        n.value++;
+
+        if (n.value >= 50) {
+          stopShop();
+          isEmojiTransparent.value = false;
+          var random = getRandomEmoji();
+          var d = {
+            ukey: Date.now.toString().trim(),
+            name: "NEW",
+            emoji: random,
+            rarity: "common",
+            durationHours: 24,
+            coinsPerHour: 0.001
+          } as EmojiItem;
+
+          emojiStore.AddEmojiFromAds(d)
+          emoji.value = random;
+        }
+      }, 10);
+    })
+    .catch(() => {
+      alert('⚠️ Ad failed or skipped')
+    }) 
 };
 
 const stopShop = () => {
@@ -114,7 +135,6 @@ const stopShop = () => {
     intervalId = null;
     n.value = 0;
     sparkle();
-    
   }
 };
 

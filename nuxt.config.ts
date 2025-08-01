@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
+import { defineNuxtConfig } from "nuxt/config";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -11,19 +12,7 @@ export default defineNuxtConfig({
   },
 
   css: ["~/assets/app.css"],
-
   pinia: {
     storesDirs: ['./stores/**'],
-  },
-  
-  app: {
-    head: {
-      script: [
-        {
-          src: 'https://js.monetag.com/show.js',
-          async: true
-        }
-      ]
-    }
   },
 })
