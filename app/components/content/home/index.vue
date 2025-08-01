@@ -26,8 +26,6 @@ import { useEmojiStore } from '~/stores/emoji.store'
 import { useWalletStore } from '~/stores/wallet.store'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 
-gsap.registerPlugin(MotionPathPlugin)
-
 const emojiStore = useEmojiStore()
 const walletStore = useWalletStore()
 
